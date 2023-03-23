@@ -21,27 +21,29 @@ with app.app_context():
 
 @app.route('/')
 def home_page():
+    '''Redirect to list of users'''
     return redirect('/users')
 
 
 @app.route('/users')
 def users_index():
+    '''Show all users'''
 
     users = User.query.order_by(User.last_name, User.first_name).all()
 
     return render_template('users.html', users=users)
 
 
-@app.route('create_user', methods=['GET'])
+@app.route('/users/new', methods=['GET'])
 def create_user():
-    '''Renders a form to create a new user'''
+    '''Show an add form for users'''
 
     return render_template('create_user.html')
 
 
-@app.route('/create_user', methods=['POST'])
+@app.route('/users/new', methods=['POST'])
 def created_user():
-    '''Handles form subbmission'''
+    '''Process the add form, adding a new user and going back to /users'''
 
     new_user = User(
         first_name=request.form['first_name'],
@@ -55,23 +57,25 @@ def created_user():
     return redirect('/users')
 
 
-@app.route('/<int:user_id>')
+@app.route('/users/<int:user_id>')
 def show_user(user_id):
-    '''Render a page with info for a specific user'''
+    '''Show information about the given user.'''
 
     user = User.query.get_or_404(user_id)
     return render_template('show_user.html', user=user)
 
 
-@app.route('/<int:user_id>/edit')
+@app.route('/users/<int:user_id>/edit')
 def edit_user(user_id):
+    '''Show the edit page for a user.'''
 
     user = User.query.get_or_404(user_id)
-    return render_template('/edit.html', user=user)
+    return render_template('edit.html', user=user)
 
 
-@app.route('/<int:user_id>/edit', methods=['POST'])
+@app.route('/users/<int:user_id>/edit', methods=['POST'])
 def update_user(user_id):
+    '''Process the edit form, returning the user to the /users page.'''
 
     user = User.query.get_or_404(user_id)
     user.first_name = request.form['first_name']
@@ -84,8 +88,9 @@ def update_user(user_id):
     return redirect('/users')
 
 
-@app.route('/<int:user_id>/delete', methods=['POST'])
+@app.route('/users/<int:user_id>/delete', methods=['POST'])
 def delete_user(user_id):
+    '''Delete the user.'''
 
     user = User.query.get_or_404(user_id)
     db.session.delete(user)
