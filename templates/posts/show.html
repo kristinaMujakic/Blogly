@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}{{post.title}}{% endblock %}
+{% block title %} {{post.title}} {% endblock %}
 
 {% block content %}
 
@@ -10,10 +10,21 @@
 
 <p>Published by: {{post.user.full_name}}</p>
 
+{% if post.tags %}
+<p>
+    <b>Tags:</b>
+    {% for tag in post.tags %}
+    <a href="/tags/{{ tag.id }}">{{ tag.name }}</a>
+    {% endfor %}
+</p>
+{% endif %}
+
 <form>
     <button formmethod="GET" formaction="/users/{{ post.user_id }}">Cancel</button>
     <button formmethod="GET" formaction="/posts/{{ post.id }}/edit">Edit</button>
     <button formmethod="POST" formaction="/posts/{{ post.id }}/delete">Delete</button>
 </form>
+
+<p><a class="btn btn-sm btn-secondary" href="/tags/new">Add tag</a></p>
 
 {% endblock %}
